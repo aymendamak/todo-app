@@ -11,7 +11,11 @@ interface Todo {
 const Todo = () => {
   const inputRef = useRef<HTMLDivElement | null>(null);
 
-  const [todoList, setTodoList] = useState([]);
+  const [todoList, setTodoList] = useState(
+    localStorage.getItem("todos")
+      ? JSON.parse(localStorage.getItem("todos"))
+      : []
+  );
 
   const add = () => {
     //if (inputRef && inputRef.current) {
@@ -37,7 +41,7 @@ const Todo = () => {
   };
 
   const toggle = (id: number) => {
-    setTodoList((prevTodos) => {
+    setTodoList((prevTodos: Todo[]) => {
       return prevTodos.map((todo: Todo) => {
         if (todo.id === id) {
           return { ...todo, isComplete: !todo.isComplete };
@@ -49,7 +53,7 @@ const Todo = () => {
   };
 
   useEffect(() => {
-    console.log(todoList);
+    localStorage.setItem("todos", JSON.stringify(todoList));
   }, [todoList]);
 
   return (
