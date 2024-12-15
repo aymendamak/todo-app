@@ -9,32 +9,31 @@ interface Todo {
 }
 
 const Todo = () => {
-  const inputRef = useRef<HTMLDivElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const [todoList, setTodoList] = useState(
-    localStorage.getItem("todos")
-      ? JSON.parse(localStorage.getItem("todos"))
-      : []
-  );
+  const [todoList, setTodoList] = useState<Todo[]>(() => {
+    const savedTodos = localStorage.getItem("todos");
+    return savedTodos ? JSON.parse(savedTodos) : [];
+  });
 
   const add = () => {
-    //if (inputRef && inputRef.current) {
-    const inputText = inputRef.current.value.trim();
-    console.log(inputRef, inputText);
-    if (inputText === "") {
-      return null;
+    if (inputRef && inputRef.current) {
+      const inputText = inputRef?.current?.value.trim();
+      console.log(inputRef, inputText);
+      if (inputText === "") {
+        return null;
+      }
+      const newTodo: Todo = {
+        id: Date.now(),
+        text: inputText,
+        isComplete: false,
+      };
+      setTodoList((prev) => [...prev, newTodo]);
+      inputRef.current.value = "";
     }
-    const newTodo: Todo = {
-      id: Date.now(),
-      text: inputText,
-      isComplete: false,
-    };
-    setTodoList((prev) => [...prev, newTodo]);
-    inputRef.current.value = "";
-    //}
   };
 
-  const deleteToDo = (id) => {
+  const deleteToDo = (id: number) => {
     setTodoList((prev: Todo[]) => {
       return prev.filter((todo: Todo) => todo.id !== id);
     });
